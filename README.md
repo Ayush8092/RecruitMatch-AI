@@ -1,33 +1,25 @@
 # RecruitMatch-AI
 RecruitMatch AI is a GenAI-based application that automates resume screening for recruitment teams by intelligently ranking candidates against job descriptions. The system processes multiple resumes in PDF, DOCX, or TXT formats, extracting structured information through advanced NLP pipelines using spaCy for named entity recognition.
+
 📋 Table of Contents
-Project Overview
+1. Project Overview
 
-Features
+2. Features
 
-Tech Stack
+3. Tech Stack
 
-Project Architecture
+4. Project Architecture
 
-Installation & Setup
+5. Installation & Setup
 
-Usage Guide
+6. Usage Guide
 
-Workflow Diagrams
+7. Workflow Diagrams
 
-Detailed Component Breakdown
+8. Detailed Component Breakdown
 
-Scoring Algorithm
+9.  Scoring Algorithm
 
-Results & Output
-
-Performance Metrics
-
-Future Enhancements
-
-Contributing
-
-License
 
 🎯 Project Overview
 RecruitMatch AI is an end-to-end AI-powered Resume Ranking and Candidate Evaluation System designed to automate and enhance the recruitment process. The system intelligently matches candidates' resumes against job descriptions using advanced Natural Language Processing (NLP), Semantic Similarity, and Machine Learning techniques.
