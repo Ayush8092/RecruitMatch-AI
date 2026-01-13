@@ -105,116 +105,16 @@ html: HTML escaping for safe output rendering
 
 📐 Project Architecture
 High-Level System Design
-text
-┌─────────────────────────────────────────────────────────────┐
-│                    USER INPUT LAYER                         │
-│  ┌──────────────┐    ┌──────────────┐   ┌──────────────┐    │
-│  │   Resumes    │    │      JD      │   │ Custom Skills│    │
-│  │(PDF/DOCX)    │    │   (Text)     │   │  (Optional)  │    │
-│  └──────────────┘    └──────────────┘   └──────────────┘    │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│            DOCUMENT PARSING & EXTRACTION LAYER              │
-│                                                             │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │
-│  │   PDF Ext   │  │  DOCX Parse │  │   TXT Read  │          │
-│  └────────┬────┘  └────────┬────┘  └────────┬────┘          │
-│           │                │                │               │
-│           └────────────────┼────────────────┘               │
-│                            ↓                                │
-│              ┌────────────────────────────┐                 │
-│              │  Text Normalization        │                 │
-│              │  (Regex Cleaning)          │                 │
-│              └────────────┬───────────────┘                 │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│        INFORMATION EXTRACTION & PARSING LAYER               │
-│                                                             │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐        │
-│  │  NER +   │ │ Contact  │ │ Education│ │Experience│        │
-│  │ Name     │ │ Extraction │ Parsing  │ │Extraction│        │
-│  │Extraction│ └──────────┘ └──────────┘ └──────────┘        │
-│  └──────────┘                                               │
-│                                                             │
-│  ┌─────────────────────────────────────┐                    │
-│  │   SKILLS EXTRACTION (Multi-Strategy)│                    │
-│  │  1. Exact Substring Matching        │                    │
-│  │  2. Token-Based Matching            │                    │
-│  │  3. NLP-Based Fallback              │                    │
-│  └─────────────────────────────────────┘                    │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│      EMBEDDING & SEMANTIC SIMILARITY LAYER                  │
-│                                                             │
-│  ┌──────────────────────────────────────┐                   │
-│  │ Sentence Transformers                │                   │
-│  │ (all-MiniLM-L6-v2, 384-dim)         │                    │
-│  │ - Resume embeddings                  │                   │
-│  │ - JD embeddings                      │                   │
-│  │ - Normalized L2 vectors              │                   │
-│  └──────────────────────────────────────┘                   │
-│                      ↓                                      │
-│  ┌──────────────────────────────────────┐                   │
-│  │ Cosine Similarity Computation        │                   │
-│  │ (Batch processing for efficiency)    │                   │
-│  └──────────────────────────────────────┘                   │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│           MULTI-FACTOR SCORING LAYER                        │
-│                                                             │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  FACTOR 1: Skills Match (40%)                        │   │
-│  │  Precision = (JD Skills Found in Resume) / (Total)   │   │
-│  └──────────────────────────────────────────────────────┘   │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  FACTOR 2: Experience Relevance (25%)                │   │
-│  │  Semantic similarity: JD vs. Resume Experience       │   │
-│  └──────────────────────────────────────────────────────┘   │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  FACTOR 3: Education Relevance (15%)                 │   │
-│  │  Semantic match + bonus for advanced degrees         │   │
-│  └──────────────────────────────────────────────────────┘   │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  FACTOR 4: Years of Experience (12%)                 │   │
-│  │  Normalized: min(1.0, yearsExp / 10.0)               │   │
-│  └──────────────────────────────────────────────────────┘   │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  FACTOR 5: LLM Overall Fit                           │   │
-│  │  HuggingFace Inference API                           │   │
-│  └──────────────────────────────────────────────────────┘   │
-│                      ↓                                      │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  WEIGHTED AGGREGATION                                │   │
-│  │  Score = (S×0.40)+(E×0.25)+(Ed×0.15)+(Y×0.12)+(L×0.08)   │
-│  │  Final Score (0-100) = Score × 100                   │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│              RANKING & OUTPUT LAYER                         │
-│                                                             │
-│  ┌─────────────────────────────────────┐                    │
-│  │ Sort candidates by final score      │                    │
-│  │ Select top-K results                │                    │
-│  └─────────────────────────────────────┘                    │
-│                      ↓                                      │
-│  ┌─────────────────────────────────────┐                    │
-│  │ Format results with:                │                    │
-│  │ - Rank, Name, Contact               │                    │
-│  │ - Score breakdown                   │                    │
-│  │ - Matched skills                    │                    │
-│  │ - Education & Experience            │                    │
-│  └─────────────────────────────────────┘                    │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│                  GRADIO WEB INTERFACE                       │
-│         (Results displayed to user in ranked order)         │
-└─────────────────────────────────────────────────────────────┘
+
+<img width="563" height="577" alt="image" src="https://github.com/user-attachments/assets/6aab1833-8983-4194-bce1-351b38f43e9f" />
+<img width="523" height="419" alt="image" src="https://github.com/user-attachments/assets/bc8e7e96-6dba-4c62-ba87-310019d4ec15" />
+<img width="549" height="418" alt="image" src="https://github.com/user-attachments/assets/0fb64dee-4fdd-40b3-b338-7ec893b094cd" />
+<img width="549" height="692" alt="image" src="https://github.com/user-attachments/assets/78dbe829-765d-47c6-b380-c1a57fbab2c7" />
+<img width="561" height="575" alt="image" src="https://github.com/user-attachments/assets/07749995-995a-4990-ba7e-8aee63d3dac0" />
+
+
+
+
 🚀 Installation & Setup
 Prerequisites
 Python 3.8+
