@@ -18,6 +18,8 @@ iv. Production Ready: Deployed as a Gradio web application with full Docker supp
 
 🏗️ 2. System Architecture
 <img width="299" height="396" alt="System Architecture" src="https://github.com/user-attachments/assets/1d7096db-9ee7-4696-8fee-50af77bc320a" />
+
+
 ⚙️ 3. Technology Stack
 
 i. Programming Language: Python
