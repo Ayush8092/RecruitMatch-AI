@@ -10,28 +10,20 @@ This notebook documents the complete development pipeline from data collection a
 The fine-tuned model powers a live Gradio application deployed at:
 **https://huggingface.co/spaces/Ak47-model-ml/RecruitMatch_AI**
 
-
 1. Key Features
-
 i. PDF Resume Parsing: Extracts text from PDF resumes using pdfplumber, pdf2image, and pytesseract OCR
-
 ii. Semantic Embeddings: Converts resumes and job descriptions into dense vector representations using sentence-transformers
-
 iii. Intelligent Matching: Ranks candidates using cosine similarity between resume embeddings and job requirement embeddings
-
 iv. Production Ready: Deployed as a Gradio web application with full Docker support for Hugging Face Spaces
-
-
 
 2. System Architecture:
 
 <img width="299" height="396" alt="Screenshot 2026-03-02 015817" src="https://github.com/user-attachments/assets/1d7096db-9ee7-4696-8fee-50af77bc320a" />
 
-
 3. Technology Stack
 i. Programming Language: Python
 ii. NLP Models: Sentence-BERT (SBERT)
-iii. Libraries: Transformers, Sentence-Transformers, Scikit-learn, NumPy, Pandas, NLTK, spaCy, PyPDF2, Matplotlib, Seaborn
+iii. Libraries: Transformers, Sentence-Transformers, Scikit-learn, NumPy, Pandas, NLTK, SpaCy, PyPDF2, Matplotlib, Seaborn
 
 
 4. Project Workflow:
