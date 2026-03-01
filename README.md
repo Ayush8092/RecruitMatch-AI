@@ -25,34 +25,7 @@ iv. Production Ready: Deployed as a Gradio web application with full Docker supp
 
 2. System Architecture:
 
-┌─────────────────────────────────────────────────────┐
-│                    INPUT LAYER                      │
-│         Resume PDFs  +  Job Description             │
-└──────────────────────┬──────────────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────────────┐
-│                   ResumeParser                      │
-│  pdfplumber → PyPDF2 → OCR + ParseQualityAuditor    │
-└──────────────────────┬──────────────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────────────┐
-│                 EmbeddingsService                   │
-│  Fine-tuned SBERT → Base SBERT → TF-IDF fallback    │
-└──────────────────────┬──────────────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────────────┐
-│                  MatcherService                     │
-│  Semantic×40% + Skill×35% + Exp×20% + Edu×5%        │
-└──────────────────────┬──────────────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────────────┐
-│                   OUTPUT LAYER                      │
-│   Ranked Table + Score Breakdown + Feedback Report  │
-└─────────────────────────────────────────────────────┘
+<img width="299" height="396" alt="Screenshot 2026-03-02 015817" src="https://github.com/user-attachments/assets/1d7096db-9ee7-4696-8fee-50af77bc320a" />
 
 
 3. Technology Stack
